@@ -80,7 +80,7 @@ void broke(int s) {
     for(x=0; x != THREADS; x++) {
      if(fork())
       attack(argv[1], argv[2], x);
-      usleep(200000);
+      usleep(300000);
     }
     getc(stdin);
     return 0;
