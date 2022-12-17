@@ -14,38 +14,36 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-         int make_socket(char *host, char *port) {
-         struct addrinfo hints, *servinfo, *p;
-         int sock, r;
-         memset(&hints, 0, sizeof(hints));
- 
-          hints.ai_family = AF_UNSPEC;
-          hints.ai_socktype = SOCK_STREAM;
-          
-         if((r=getaddrinfo(host, port, &hints, &servinfo))!=0) {
-         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(r));
-         exit(0);
+  int make_socket(char *host, char *port) {
+  struct addrinfo hints, *servinfo, *p;
+  int sock, r;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;   
+  if((r=getaddrinfo(host, port, &hints, &servinfo))!=0) {
+  fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(r));
+  exit(0);
        }
-         for(p = servinfo; p != NULL; p = p->ai_next) {
-         if((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
-         continue;
+  for(p = servinfo; p != NULL; p = p->ai_next) {
+  if((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+  continue;
         }
-             if(connect(sock, p->ai_addr, p->ai_addrlen)==-1) {
-             close(sock);
-             continue;
+  if(connect(sock, p->ai_addr, p->ai_addrlen)==-1) {
+  close(sock);
+  continue;
         }
-             break;
+  break;
     }
-             if(p == NULL) {
-             if(servinfo)
-             freeaddrinfo(servinfo);
-             fprintf(stderr, "No connection could be made\n");
-             exit(0);
+  if(p == NULL) {
+  if(servinfo)
+  freeaddrinfo(servinfo);
+  fprintf(stderr, "No connection could be made\n");
+  exit(0);
     }
-         if(servinfo)
-         freeaddrinfo(servinfo);
-         fprintf(stderr, "[Connected -> %s:%s]\n", host, port);
-         return sock;
+  if(servinfo)
+  freeaddrinfo(servinfo);
+  fprintf(stderr, "[Connected -> %s:%s]\n", host, port);
+  return sock;
 }
          void broke(int s) {
 }
